@@ -5,45 +5,28 @@ import { useState } from 'react';
 import { Square } from './components/Square';
 import { WinnerModal } from './components/WinnerModal';
 
-import { setLocalStorage } from './logic/localStorage';
+import {TURNS, WINNER_COMBOS} from './logic/globalConstants'
+import { setLocalStorage, resetLocalStorage } from './logic/localStorage';
 
 import './App.css'
-
-const TURNS = {
-  X: "💩",
-  O: "💲"
-}
-
-const WINNER_COMBOS = [
-  [0, 1, 2],
-  [3, 4, 5],
-  [6, 7, 8],
-  [0, 3, 6],
-  [1, 4, 7],
-  [2, 5, 8],
-  [0, 4, 8],
-  [2, 4, 6]
-]
 
 function Board() {
   console.log("render board")
   //const board = Array(9).fill(null);
   //const board = ["X", "O", "X", "X", "O", "X", "X", "O", "X"];
   const [board, setBoard] = useState(() => {
-    
-    // IMPORTANTE: localStorage no funciona en servidores, solo a nivel local
-    const localSotrageBoard = window.localStorage.getItem('board')
-    return localSotrageBoard ? JSON.parse(localSotrageBoard) : Array(9).fill(null)
+    // IMPORTANTE: localStorage no funciona en servidores, solo a nivel local    
+    const localStorageBoard = window.localStorage.getItem('board')
+    return localStorageBoard ? JSON.parse(localStorageBoard) : Array(9).fill(null)
   });
 
-  
-  // Recuperamos valores de localStorage al inicializar un estado en useState para que no se haga siempre 
+
+  // Recuperamos valores de localStorage al inicializar un estado en useState para que no se haga siempre que se renderice el componente
   const [turn, setTurn] = useState(() => {
     const turnLocalStorage = window.localStorage.getItem('turn')
     return turnLocalStorage ? turnLocalStorage : TURNS.X
   });
-    
-    
+
   //El ganador por defecto está a null, solo cambia si encontramos un ganador
   const [winner, setWinner] = useState(null);
 
@@ -76,14 +59,13 @@ function Board() {
     newBoard[index] = turn;
     setBoard(newBoard);
 
-
     //Cambiar el turno
     const newTurn = turn === TURNS.X ? TURNS.O : TURNS.X;
     setTurn(newTurn);
 
     // guardar partida
-    // window.localStorage.setItem('board', JSON.stringify(board));
-    // window.localStorage.setItem('turn', turn);
+    // window.localStorage.setItem('board', JSON.stringify(newBoard))
+    // window.localStorage.setItem('turn', newTurn)
     setLocalStorage(newBoard, newTurn)
 
     const newWinner = checkWinner(newBoard)
@@ -102,11 +84,10 @@ function Board() {
     setTurn(TURNS.X);
     setWinner(null);
 
-    // Borraría cualquier otra clave que existiera. No es la mejor idea en este proyecto. 
-    // window.localStorage.clear()
 
-    window.localStorage.removeItem('board')
-    window.localStorage.removeItem('turn')
+    // window.localStorage.removeItem('board')
+    // window.localStorage.removeItem('turn')
+    resetLocalStorage()
   }
 
   const checkEndGame = (newBoard) => {
@@ -122,7 +103,6 @@ function Board() {
           <section className='game'>
             {
               board.map((square, index) => {
-                  console.log("square:", square, " index:", index);
                   return(
                       <Square 
                         key={index}
