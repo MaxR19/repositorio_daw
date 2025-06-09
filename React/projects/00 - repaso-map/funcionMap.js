@@ -16,12 +16,12 @@ const doubles = numeros.map((numero) => {
 });
 
 console.log("Array original: ", numeros);
-console.log("Array nuevo: ", doubles);
+console.log('Array nuevo: ', doubles);
 
 console.log("-------------------------------------");
 
-//Devolver un array con todos los nombres en mayúsculas
-const nombres = ["Valerion", "Johanien", "Pedron", "Sharik"];
+// Devolver un array con todos los nombres en mayúsculas
+const nombres = ["Valerion", 'Johanien', "Pedron", "Sharik"];
 
 const nombresMayus = nombres.map((nombre) => {
     return nombre.toUpperCase();
