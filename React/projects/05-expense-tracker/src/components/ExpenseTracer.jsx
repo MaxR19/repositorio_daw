@@ -153,7 +153,7 @@ function ExpenseTracker () {
                                                     <p className='et-expense-datetime'>{expense.date} a las {expense.time}</p>
                                                 </div>
                                             </div>
-                                            <div className='expense-amount'>
+                                            <div className='et-expense-amount'>
                                                 €{expense.amount.toFixed(2)}
                                             </div> 
                                         </div>
