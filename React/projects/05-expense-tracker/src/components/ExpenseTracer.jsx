@@ -1,8 +1,10 @@
+import './ExpenseTracker.css'
+
 function ExpenseTracker () {
     return (
         <div className="expense-tracker">
             <header className="header">
-                <h1>Control de gastos</h1>
+                <h1>Control de Gastos</h1>
             </header>
             
             <main className="et-main-content">
