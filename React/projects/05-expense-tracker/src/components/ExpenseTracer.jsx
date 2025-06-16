@@ -23,7 +23,7 @@ function ExpenseTracker () {
 
         if(valor === '') return
 
-        setDescription(valor);
+        setAmount(valor);
     }
 
     const handleChangeCategory = (event) => {
@@ -31,7 +31,43 @@ function ExpenseTracker () {
 
         if(valor === '') return
 
-        setDescription(valor);
+        setCategory(valor);
+    }
+
+    const handleSubmit = (event) => {
+        // Parar la ejecución del submit
+        event.preventDefault();
+
+        if (!description.trim()) {
+            alert('Por favor, añade una descripción')
+            return;
+        }
+
+        
+        if (!amount || amount <= 0) {
+            alert('Por favor, añade una cantidad válida')
+            return;
+        }
+
+        // Crear un nuevo gasto
+        const newExpense ={
+            id: Date.now(),
+            description: description.trim(),
+            amount: parseFloat(amount),
+            category: category, /* O simplemente category, */
+            date: new Date().toLocaleDateString('es-ES'),
+            time: new Date().toLocaleTimeString('es-ES', {hour: '2-digit', minute: '2-digit'})
+        }
+
+        setExpenses(prevExpenses => [newExpense, ...prevExpenses])
+
+        console.log('Nuevo gasto añadido', newExpense);
+    }
+
+    const cleanForm = () => {
+        setDescription('');
+        setAmount('');
+        setCategory('');
     }
 
     return (
@@ -44,7 +80,7 @@ function ExpenseTracker () {
                 <section className="et-form-section">
                     <h2>Añadir gasto</h2>
 
-                    <form className='et-expense-form'>
+                    <form className='et-expense-form' onSubmit={handleSubmit}>
                         <div className='et-form-group'>
                             <label htmlFor='description'> Descripción:</label>
                             <input
@@ -77,9 +113,9 @@ function ExpenseTracker () {
                                 onChange={(event) => handleChangeCategory(event)}
                             >
                                 <option value='comida'>Comida</option>
-                                <option value='trassporte'>Transporte</option>
+                                <option value='transporte'>Transporte</option>
                                 <option value='entretenimiento'>Entretenimiento</option>
-                                <option value='salude'>Salud</option>
+                                <option value='salud'>Salud</option>
                                 <option value='otros'>Otros</option>
                             </select>
                         </div>
