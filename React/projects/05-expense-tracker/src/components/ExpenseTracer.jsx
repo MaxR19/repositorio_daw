@@ -84,7 +84,7 @@ function ExpenseTracker () {
                             </select>
                         </div>
 
-                        <button tyoe='submit' className='et-submit-'>Añadir Gasto</button>
+                        <button tyoe='submit' className='et-submit-btn'>Añadir Gasto</button>
                     </form>
                 </section>
 
