@@ -43,6 +43,15 @@ function ExpenseTracker () {
     }, [expenses]);
     // Se ejecuta cada vez que expenses cambia
 
+    const clearAllExpenses = () => {
+        const confirmation = window.confirm("Estás segur@ de que quieres borrar todos los gastos");
+
+        if (confirmation) {
+            setExpenses([]);
+            localStorage.removeItem('expenses');
+        }
+    }
+
     const handleChangeDescription = (event) => {
         const valor = event?.target?.value || '';
 
@@ -95,6 +104,8 @@ function ExpenseTracker () {
         setExpenses(prevExpenses => [newExpense, ...prevExpenses])
 
         console.log('Nuevo gasto añadido', newExpense);
+
+        cleanForm();
     }
 
     const cleanForm = () => {
@@ -103,11 +114,68 @@ function ExpenseTracker () {
         setCategory('');
     }
 
+    const totalExpenses = expenses.reduce((sum, expense) => sum + expense.amount, 0);
+    const expenseCount = expenses.length;
+
+    const expensesByCategory = expenses.reduce((acc, expense) => {
+        acc[expense.category] = (acc[expense.category] || 0) + expense.amount;
+        return acc;
+    }, 0);
+
     return (
         <div className="expense-tracker">
             <header className="header">
                 <h1>Control de Gastos</h1>
             </header>
+
+            <section className='et-dashboard'>
+                <h2>🗒️Resumen</h2>
+
+                <div className='et-stat-grid'>
+                    <div className='stats-card'>
+                        <div className='et-stat-icon'>💰</div>
+                        <div className='et-stat-info'>
+                            <h3>Total gastado</h3>
+                            <p className='et-stat-value'>€{totalExpenses.toFixed(2)}</p>
+                        </div>
+                    </div>
+                    <div className='stats-card'>
+                        <div className='et-stat-icon'>⛽</div>
+                        <div className='et-stat-info'>
+                            <h3>Número de gastos</h3>
+                            <p className='et-stat-value'>{expenseCount}</p>
+                        </div>
+                    </div>
+                    <div className='stats-card'>
+                        <div className='et-stat-icon'>⚖️</div>
+                        <div className='et-stat-info'>
+                            <h3>Promedio por Gasto</h3>
+                            <p className='et-stat-value'>€{expenseCount > 0 ? (totalExpenses / expenseCount).toFixed(2):'0:00'}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {Object.keys(expensesByCategory).length > 0 && (
+                    <div className='et-category-breakdown'>
+                        <h3>Gastos por Categoría</h3>
+                        <div className='et-category-list'>
+                            {Object.entries(expensesByCategory).map(([category, amount]) => (
+                                <div key={category} className='et-category-item'>
+                                    <span className='et-category-name'>
+                                        {category === 'comida' && '🍕'}
+                                        {category === 'transporte' && '🚌'}
+                                        {category === 'entretenimiento' && '🍕'}
+                                        {category === 'salud' && '🍕'}
+                                        {category === 'otros' && '🍕'}
+                                    </span>
+                                    <span className='et-category-amount'>€{amount.toFixed(2)}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+            </section>
             
             <main className="et-main-content">
                 <section className="et-form-section">
@@ -192,11 +260,10 @@ function ExpenseTracker () {
                                         </div>
                                     ))
                                 }
+                                <button type='button' onClick={clearAllExpenses} className='et-clear-btn'>Limpiar todo</button>
                             </div>
                         )
                     }
-
-                    <p>Total de gastos: {expenses.length}</p>
                 </section>
             </main>
         </div>
